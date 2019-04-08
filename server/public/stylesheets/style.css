@@ -1,0 +1,98 @@
+/* RESET */
+* {margin: 0; padding: 0; font-size: 100%; font-family: 'Open Sans', sans-serif; font-weight: normal;
+box-sizing:border-box; border:none; outline: none; }
+img {max-width: 100%;}
+nav , ul {list-style: none;}
+a {text-decoration: none;}
+h2 {font-size: 1.5em; color: #333;}
+p {font-size: 1em; color: #777;}
+
+/* BG */
+.bg {background-color: #13c7ae;}
+
+/* CABEÇALHO */
+.cabecalho {
+    width: 100%;
+    height: 15vh;
+    position: relative;
+    top: 0; left: 0; 
+    display:flex; 
+    justify-content:space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+header nav{display: flex;}
+header li a{color: azure;}
+header li {margin: 0 15px;}
+header li:first-child{margin-left: 0;}
+header li:last-child{margin-right: 0;}
+
+/* FORMULÁRIO */
+.form {width: 100%; padding: 35px 8%;}
+.form label {display: block;font-size: 20px;}
+.text-btn label{font-size: 15px;}
+
+.divisao-coluna{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+.completar-campo{width: 100%;}
+
+.small-upload{display: flex;width: 200px;margin-left: -10px;color: #6c757d!important;}
+
+#nome_input_arquivo{font-size: 16px;}
+
+/* RODAPÉ */
+footer {display: flex; height: 15vh; padding: calc(15vh/2.5);margin: 0; align-items: center;}
+footer p {color: #fff; text-align: center; justify-content: center;} 
+
+
+/* RESPONSIVIDADE */
+
+/* Celular SM */
+@media (max-width: 575.98px){
+    .cabecalho { display: flex; flex-direction: column; height: 18vh; padding-bottom: 90px;padding-top: 30px;}
+    header img{ width: 75px;}
+    nav{padding-top: 15px;}
+    nav a{font-size: 14px;}
+    .divisao-coluna{flex-direction: column;}
+    .form-group {margin-bottom: 0;}
+    .custom-file-label{width: 199px;}
+    .text-muted {margin-left: 0px;}
+
+}
+
+/* Tablet MD */
+@media(min-width: 576px) and (max-width: 767.98px){
+    .cabecalho { height: 17vh;}
+    .form-group {padding-top: 2%;padding-bottom: 2%;}
+    
+}
+
+/* Tablet MD */
+@media(min-width: 768px) and (max-width: 991.98px){  
+    .completar-campo{margin-right: 15px; }
+    .completar-campo:last-child{
+        margin-right: 0;
+    }
+
+}
+/* Tablet MD */
+@media(min-width: 992px) and (max-width: 1199.98px){  
+    .cabecalho{ padding: 50px 50px;}
+    .completar-campo{margin-right: 15px; }
+    .completar-campo:last-child{
+        margin-right: 0;
+    }
+}
+
+/* Tablet MD */
+@media (min-width: 1200px) {
+    .cabecalho{padding: 20px 160px;}
+    .completar-campo{margin-right: 15px; }
+    .completar-campo:last-child{
+        margin-right: 0;
+    }
+}

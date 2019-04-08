@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <% include include/head.ejs %> 
+</head>
+<body>
+    <% include include/header.ejs %> 
+    <main class="container form form-group">
+        <form action="/api/search" method="POST">
+            <div class="form-group">
+                <input class="form-control col-md-4" type="text" id="busca" name="busca" placeholder="Busca TCC" required  autocomplete="off">
+            </div>
+            <button class="btn btn-outline-info"  type="submit">Buscar</button>
+        </form>
+    </main>
+    <% include include/footer.ejs %>
+    <% include include/scripts.ejs %>
+    
+</body>
+</html>

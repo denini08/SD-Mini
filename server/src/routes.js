@@ -15,5 +15,8 @@ routes.get('/index', (req,res) =>{
 
 routes.get('/busca', PdfController.findByQuery) ;   
 
+routes.get('/inserir', PdfController.inserir) ;   
+routes.post('/inserir', PdfController.inserirPost) ;
+
 
 module.exports = routes;

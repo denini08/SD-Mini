@@ -6,10 +6,12 @@ const cors = require('cors');
 var path = require('path');
 var logger = require('morgan');
 const ip = require('ip')
+var fileupload = require("express-fileupload");
 
 const app = express();
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileupload());
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -17,9 +19,12 @@ app.use(cors());
 app.set('views', path.join(__dirname , 'src','views'));
 app.set('view engine', 'ejs');
 
+
+//UDP
 const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
-
+const key = 'SDéTop';
+let filhos = [];
 server.on('error', (err) => {
   console.log(`server error:\n${err.stack}`);
   server.close();
@@ -27,6 +32,9 @@ server.on('error', (err) => {
 
 server.on('message', (msg, rinfo) => {
   console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  if(msg === key){
+    filhos.push(rinfo.address);
+  }
 });
 
 server.on('listening', () => {

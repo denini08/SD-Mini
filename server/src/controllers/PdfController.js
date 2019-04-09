@@ -45,6 +45,18 @@ module.exports = {
        return res.json(pdf);
    },
 
+   async inserir(req,res){
+    res.render('inserir');    
+},
+
+    async inserirPost(req,res){
+        let sampleFile = req.files.pdfzin;
+        console.log('sampleFile',sampleFile);
+
+        console.log('body',req.body);
+        res.render('inserir');    
+    },
+
    /* 
         METHOD: PUT
 
@@ -68,6 +80,5 @@ module.exports = {
     }).catch((err)=>{
         console.log('erro1',err);
     });
-
    }
 }

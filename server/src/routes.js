@@ -13,5 +13,7 @@ routes.get('/index', (req,res) =>{
     res.render('index', { title: 'Express' });
 });
 
+routes.get('/busca', PdfController.findByQuery) ;   
+
 
 module.exports = routes;

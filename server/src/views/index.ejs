@@ -6,9 +6,9 @@
 <body>
     <% include include/header.ejs %> 
     <main class="container form form-group">
-        <form action="/api/search" method="POST">
+        <form action="busca" method="GET">
             <div class="form-group">
-                <input class="form-control col-md-4" type="text" id="busca" name="busca" placeholder="Busca TCC" required  autocomplete="off">
+                <input class="form-control col-md-4" type="text" id="busca" name="b" placeholder="Busca pdf" required  autocomplete="off">
             </div>
             <button class="btn btn-outline-info"  type="submit">Buscar</button>
         </form>

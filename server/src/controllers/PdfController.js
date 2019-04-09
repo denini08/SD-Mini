@@ -48,7 +48,7 @@ module.exports = {
    /* 
         METHOD: PUT
 
-        Atualiza um pdf
+        Deleta um pdf
     */
    async destroy(req, res){
     await Pdf.findByIdAndDelete(req.params.id);
@@ -56,5 +56,18 @@ module.exports = {
     return res.json({
         message: 'pdf removido com sucesso !'
     });
+   },
+
+   async findByQuery(req,res){
+    let query = req.query.b;
+    let obj =   {title: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")}
+    let obj2 = {description: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")}
+    Pdf.find().or([obj,obj2]).then((retorno) =>{ //olha a doc
+        res.render('resultadosBusca', { 'retorno': retorno,
+            'string': query});
+    }).catch((err)=>{
+        console.log('erro1',err);
+    });
+
    }
 }

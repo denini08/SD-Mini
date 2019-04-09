@@ -17,6 +17,27 @@ app.use(cors());
 app.set('views', path.join(__dirname , 'src','views'));
 app.set('view engine', 'ejs');
 
+const dgram = require('dgram');
+const server = dgram.createSocket('udp4');
+
+server.on('error', (err) => {
+  console.log(`server error:\n${err.stack}`);
+  server.close();
+});
+
+server.on('message', (msg, rinfo) => {
+  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+});
+
+server.on('listening', () => {
+  const address = server.address();
+  server.addMembership('230.185.192.108')
+  console.log(`server listening ${address.address}:${address.port}`);
+});
+
+server.bind(41234);
+// Prints: server listening 0.0.0.0:41234
+
 
 mongoose.connect("mongodb://localhost:27017/servidor", { useNewUrlParser: true });
 

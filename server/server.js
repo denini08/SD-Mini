@@ -31,7 +31,7 @@ server.on('error', (err) => {
 });
 
 server.on('message', (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+  console.log(`mensagem:  ${msg} de ${rinfo.address}:${rinfo.port}`);
   if(msg === key){
     filhos.push(rinfo.address);
   }

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-
+const request = require('request-promise');
 const Pdf = mongoose.model('Pdf');
+const fs = require('fs')
+const stream = require('stream');
 
 module.exports = {
 
@@ -45,16 +47,67 @@ module.exports = {
        return res.json(pdf);
    },
 
+   /*
+        GET
+   */
    async inserir(req,res){
     res.render('inserir');    
 },
 
+/* POST */
     async inserirPost(req,res){
-        let sampleFile = req.files.pdfzin;
-        console.log('sampleFile',sampleFile);
 
-        console.log('body',req.body);
-        res.render('inserir');    
+            let sampleFile = req.files.pdfzin;
+            req.files.pdfzin.mv('./teste.pdf', (err) =>{
+                if(err){
+                    console.log('erro1', err);
+                    res.status(400).json(err);
+                }else{
+                    let pdf = {
+                        'title': req.body.title,
+                        'description': req.body.description,
+                        'url': 'http://localhost:3002'
+                    }
+                    //decobrir em qual server salvar o arquivo
+                    Pdf.create(pdf).then((pdfz) =>{
+                        let pdfS = pdfz;
+
+                        const options = {
+                            method: 'POST',
+                            uri: 'http://localhost:3002/api/salvar',
+                            formData: {
+                                id: pdfS.id,
+                                description: req.body.description,
+                                file: {
+                                    value: fs.createReadStream('./teste.pdf'),
+                                    options:{
+                                        filename:  pdfS.id +'.pdf',
+                                        contentType: 'application/pdf'
+                                    }
+                                }
+                            },
+                            headers: {
+                                 'content-type': 'multipart/form-data'
+                            }
+                        }
+                        
+                        request(options).then(function (response){
+                            console.log('oi?')
+                            res.status(200).json(response);
+                        })
+                        .catch(function (err) {
+                            console.log('erooww',err);
+                            res.status(404);  
+                        })
+
+                    }).catch((err) =>{
+                        console.log('erro2', err);
+                        res.status(400).json(err);
+                    })
+
+                } 
+                
+            })  
     },
 
    /* 
@@ -72,9 +125,10 @@ module.exports = {
 
    async findByQuery(req,res){
     let query = req.query.b;
-    let obj =   {title: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")}
-    let obj2 = {description: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")}
-    Pdf.find().or([obj,obj2]).then((retorno) =>{ //olha a doc
+    let obj =   {title: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")};
+    let obj2 = {description: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")};
+
+    Pdf.find().or([obj,obj2]).then((retorno) =>{ 
         res.render('resultadosBusca', { 'retorno': retorno,
             'string': query});
     }).catch((err)=>{

@@ -2,9 +2,8 @@ const express = require('express');
 const routes = express.Router();
 
 routes.post('/salvar', (req,res) =>{
-	console.log('CHEGOU PAPAI')
-	console.log('req',req.body);
-	console.log('FIle ',req.files.file);
+	console.log('Novo arquivo:')
+
 
 	let arq = req.files.file;
 
@@ -12,16 +11,12 @@ routes.post('/salvar', (req,res) =>{
 		if(err){
 			res.status(400).json(err);
 		} else{
-			console.log('Arquivo salvo com sucesso');
+			console.log('Novo arquivo salvo:', arq.name);
+			res.status(201).json({'mens': 'ok'});
 		}
 	})
-	
-	res.status(201).json({'mens': 'ok'});
 });
 
-routes.get('/sal', (req,res) =>{
-	res.status(200).json({'ok': 'ok'})
-})
 
 module.exports = routes;
 

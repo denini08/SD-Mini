@@ -4,17 +4,20 @@ const Pdf = mongoose.model('Pdf');
 const fs = require('fs')
 const stream = require('stream');
 
-module.exports = {
 
+class PdfController {
+
+    constructor(){
+    }
     /* 
         METHOD: GET
 
         Retorna todos os pdf's cadastrados
     */
     async index(req, res){
-        const pdfs = await Pdf.findOne({}); 
+        const pdfs = await Pdf.findOne(); 
         return res.json(pdfs);
-    },
+    }
 
     
     /* 
@@ -25,7 +28,7 @@ module.exports = {
     async show(req, res){
         const pdf = await Pdf.findById(req.params.id);
         return res.json(pdf);
-    },
+    }
     
     /* 
         METHOD: POST
@@ -35,7 +38,7 @@ module.exports = {
     async store(req, res){
         const pdf = await Pdf.create(req.body);
         return res.json(pdf);
-    },
+    }
 
     /* 
         METHOD: PUT
@@ -45,17 +48,17 @@ module.exports = {
        const pdf = await Pdf.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
        return res.json(pdf);
-   },
+   }
 
    /*
         GET
    */
    async inserir(req,res){
     res.render('inserir');    
-},
+}
 
 /* POST */
-    async inserirPost(req,res){
+ inserirPost(req,res,Balancer){
 
             let sampleFile = req.files.pdfzin;
             req.files.pdfzin.mv('./teste.pdf', (err) =>{
@@ -63,52 +66,53 @@ module.exports = {
                     console.log('erro1', err);
                     res.status(400).json(err);
                 }else{
-                    let pdf = {
-                        'title': req.body.title,
-                        'description': req.body.description,
-                        'url': 'http://localhost:3002'
-                    }
-                    //decobrir em qual server salvar o arquivo
-                    Pdf.create(pdf).then((pdfz) =>{
-                        let pdfS = pdfz;
-
-                        const options = {
-                            method: 'POST',
-                            uri: 'http://localhost:3002/api/salvar',
-                            formData: {
-                                id: pdfS.id,
-                                description: req.body.description,
-                                file: {
-                                    value: fs.createReadStream('./teste.pdf'),
-                                    options:{
-                                        filename:  pdfS.id +'.pdf',
-                                        contentType: 'application/pdf'
-                                    }
-                                }
-                            },
-                            headers: {
-                                 'content-type': 'multipart/form-data'
-                            }
+                    Balancer.getServidor().then((servidorEnviar) =>{
+                        let pdf = {
+                            'title': req.body.title,
+                            'description': req.body.description,
+                            'url': servidorEnviar.ip + ':'+ servidorEnviar.port
                         }
-                        
-                        request(options).then(function (response){
-                            console.log('oi?')
-                            res.status(200).json(response);
+                        console.log('pdfBanco', pdf);
+                        //decobrir em qual server salvar o arquivo
+                        Pdf.create(pdf).then((pdfz) =>{
+                            let pdfS = pdfz;
+    
+                            const options = {
+                                method: 'POST',
+                                uri: 'http://'+ servidorEnviar.ip + ':'+ servidorEnviar.port +'/api/salvar',
+                                formData: {
+                                    id: pdfS.id,
+                                    description: req.body.description,
+                                    file: {
+                                        value: fs.createReadStream('./teste.pdf'),
+                                        options:{
+                                            filename:  pdfS.id +'.pdf',
+                                            contentType: 'application/pdf'
+                                        }
+                                    }
+                                },
+                                headers: {
+                                     'content-type': 'multipart/form-data'
+                                }
+                            }
+                            
+                            request(options).then(function (response){
+                                console.log('EVIADO PAPAI')
+                                res.status(200).json(response);
+                            })
+                            .catch(function (err) {
+                                console.log('erooww',err);
+                                res.status(404);  
+                            })
+    
+                        }).catch((err) =>{
+                            console.log('erro2', err);
+                            res.status(400).json(err);
                         })
-                        .catch(function (err) {
-                            console.log('erooww',err);
-                            res.status(404);  
-                        })
-
-                    }).catch((err) =>{
-                        console.log('erro2', err);
-                        res.status(400).json(err);
                     })
-
                 } 
-                
             })  
-    },
+    }
 
    /* 
         METHOD: PUT
@@ -121,7 +125,7 @@ module.exports = {
     return res.json({
         message: 'pdf removido com sucesso !'
     });
-   },
+   }
 
    async findByQuery(req,res){
     let query = req.query.b;
@@ -136,3 +140,5 @@ module.exports = {
     });
    }
 }
+
+module.exports = PdfController;

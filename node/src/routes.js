@@ -1,5 +1,6 @@
 const express = require('express');
 const routes = express.Router();
+const fs = require('fs');
 
 routes.post('/salvar', (req,res) =>{
 	console.log('Novo arquivo:')
@@ -16,6 +17,21 @@ routes.post('/salvar', (req,res) =>{
 		}
 	})
 });
+
+routes.post('/remove/:id', (req,res) =>{
+	console.log('Excluindo arquivo:')
+	let id = req.params.id;
+	let filePath = './arq/' + id + '.pdf'; 
+
+	fs.unlink(filePath, (err) =>{
+		if(err){
+			res.json(err);
+		}else{
+			console.log('arquivo exluido');
+			res.send('ok');
+		}
+	})
+})
 
 
 module.exports = routes;

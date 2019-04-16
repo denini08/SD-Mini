@@ -20,7 +20,9 @@
                         <div class="card-body">
                             <p>Descrição: <%= retorno[i].description%></p>
                             <p>Data upload: <%= retorno[i].createdAt%></p>
-                            <a class="bnt btn-sucess" href="download/<%=retorno[i].id %>">Download</a>
+                            <button class="btn btn-success down" pdf="<%=retorno[i].id %>">Download</button>
+                            <a class="btn btn-danger" href="/api/delete/<%=retorno[i].id %>">Excluir</a>
+
                         </div>
                     </div>
                 <% } %>
@@ -28,4 +30,31 @@
         <% include include/footer.ejs %>
         <% include include/scripts.ejs %>
     </body>
+    <script src="http://danml.com/js/download.js"></script>
+    <script>
+    $( document ).ready(function(){
+        $('.down').on('click', function(){
+            var link = $(this).attr('pdf');
+
+            $.ajax({
+                type: "GET",
+                url: '/api/getPdf/' + link,
+                success: function(data){
+                    console.log('CHEGOU',data);
+                    $.ajax({
+                        type: "GET",
+                        url: 'http://' + data,
+                        success: download.bind(true, "application/pdf", "teste.pdf"),
+                        fail: function(err){
+                            console.log('err', err)
+                        },
+                        xhrFields: {
+                            responseType: 'blob'
+                        }
+                    });
+                },
+            });
+        })
+    })
+    </script>
 </html>

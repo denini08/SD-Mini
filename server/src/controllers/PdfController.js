@@ -9,62 +9,14 @@ class PdfController {
 
     constructor(){
     }
-    /* 
-        METHOD: GET
-
-        Retorna todos os pdf's cadastrados
-    */
-    async index(req, res){
-        const pdfs = await Pdf.findOne(); 
-        return res.json(pdfs);
-    }
-
     
-    /* 
-        METHOD: GET
-
-        Retorna um pdf pelo id
-    */
-    async show(req, res){
-        const pdf = await Pdf.findById(req.params.id);
-        return res.json(pdf);
-    }
-    
-    /* 
-        METHOD: POST
-
-        Registra um pdf
-    */
-    async store(req, res){
-        const pdf = await Pdf.create(req.body);
-        return res.json(pdf);
-    }
-
-    /* 
-        METHOD: PUT
-        Atualiza um pdf
-    */
-   async update(req, res){
-       const pdf = await Pdf.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
-       return res.json(pdf);
-   }
-
-   /*
-        GET
-   */
-   async inserir(req,res){
-    res.render('inserir');    
-}
-
 /* POST */
- inserirPost(req,res,Balancer){
-
-            let sampleFile = req.files.pdfzin;
+ inserirPost(req,Balancer){
+        return new Promise((resolve, reject) => {
             req.files.pdfzin.mv('./teste.pdf', (err) =>{
                 if(err){
                     console.log('erro1', err);
-                    res.status(400).json(err);
+                    reject(err);
                 }else{
                     Balancer.getServidor().then((servidorEnviar) =>{
                         let pdf = {
@@ -73,7 +25,6 @@ class PdfController {
                             'url': servidorEnviar.ip + ':'+ servidorEnviar.port
                         }
                         console.log('pdfBanco', pdf);
-                        //decobrir em qual server salvar o arquivo
                         Pdf.create(pdf).then((pdfz) =>{
                             let pdfS = pdfz;
     
@@ -97,48 +48,72 @@ class PdfController {
                             }
                             
                             request(options).then(function (response){
-                                console.log('EVIADO PAPAI')
-                                res.status(200).json(response);
+                                console.log('EVIADO PAPAI');
+                                resolve(response);
                             })
                             .catch(function (err) {
                                 console.log('erooww',err);
-                                res.status(404);  
+                                reject(err); 
                             })
     
                         }).catch((err) =>{
                             console.log('erro2', err);
-                            res.status(400).json(err);
+                            reject(err);
                         })
                     })
                 } 
             })  
+        })
     }
 
-   /* 
-        METHOD: PUT
-
-        Deleta um pdf
-    */
-   async destroy(req, res){
-    await Pdf.findByIdAndDelete(req.params.id);
-
-    return res.json({
-        message: 'pdf removido com sucesso !'
-    });
+   findByQuery(query){
+       return new Promise((resolve, reject)=>{
+        let obj =   {title: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")};
+        let obj2 = {description: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")};
+    
+        Pdf.find().or([obj,obj2]).then((retorno) =>{ 
+            resolve(retorno);
+        }).catch((err)=>{
+            console.log(JSON.stringify(err));
+            reject(err);
+        });
+       })
    }
 
-   async findByQuery(req,res){
-    let query = req.query.b;
-    let obj =   {title: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")};
-    let obj2 = {description: new RegExp(".*" + query.replace(/(\W)/g, "\\$1") + ".*")};
+    getPdf(id){
+        return new Promise((resolve, reject) =>{
+            Pdf.findById(id).then((res)=>{
+                resolve(res.url + '/'+ id + '.pdf');
+            }).catch((err) =>{
+                reject(err);
+            })
+        })
+    }
 
-    Pdf.find().or([obj,obj2]).then((retorno) =>{ 
-        res.render('resultadosBusca', { 'retorno': retorno,
-            'string': query});
-    }).catch((err)=>{
-        console.log('erro1',err);
-    });
-   }
+    deletarPdf(id){
+        return new Promise((resolve,reject) =>{
+            Pdf.findById(id).then((pdf) =>{
+                let options = {
+                    method: 'POST',
+                    uri: 'http://' + pdf.url + '/api/remove/' + pdf.id
+                };
+
+                request(options).then(function (response){
+                    console.log('exluiu papai');
+                    Pdf.findByIdAndRemove(id).then((succ) =>{
+                        resolve('ok');                    
+                    });
+                }).catch((err) =>{
+                    console.log('erroA', err)
+                    reject(err);
+                })
+            }).catch(err =>{
+                console.log('asdasd' , err);
+                reject(err);
+            })
+        })
+    }
+
 }
 
 module.exports = PdfController;

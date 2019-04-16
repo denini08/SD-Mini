@@ -3,11 +3,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 var fileupload = require("express-fileupload");
 const app = express();
+var path = require('path');
+
 
 app.use(fileupload());
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'arq')));
 
 
 

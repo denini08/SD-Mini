@@ -39,7 +39,7 @@ class Balancer{
             if( mensgens[0] === key){
                 console.log(`Novo filho: ${rinfo.address}`)
                 this.filhos.push({ ip: rinfo.address, port: mensgens[1]});
-                console.log(`Total filhos: [ ${this.filhos} ]`)
+                console.log(`Total filhos:  [ ${JSON.stringify(this.filhos)} ]`)
             }
           });
           

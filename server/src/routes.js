@@ -14,22 +14,49 @@ class RoutesPdf{
     }
 
     inicializarRotas(){
-        routes.get('/products', this.PdfController.index);
-        routes.post('/products', this.PdfController.store);
-        routes.get('/products/:id', this.PdfController.show);
-        routes.put('/products/:id', this.PdfController.update);
-        routes.delete('/products/:id', this.PdfController.destroy);
-        
         routes.get('/index', (req,res) =>{
             res.render('index', { title: 'Express' });
         });
         
-        routes.get('/busca', this.PdfController.findByQuery) ;   
-        
-        routes.get('/inserir', this.PdfController.inserir) ;   
-        routes.post('/inserir', (req,res) =>{
-            this.PdfController.inserirPost(req,res,this.Balancer);
+        routes.get('/busca', (req,res) =>{
+            this.PdfController.findByQuery(req.query.b).then((result) =>{
+                res.render('resultadosBusca', { 'retorno': result,
+                'string': req.query.b});
+            }).catch((err) =>{
+                console.log('erro1213123', err);
+                res.json(err);
+            })
         });
+        
+        routes.get('/inserir', (req,res) =>{
+            res.render('inserir'); 
+        });
+
+        routes.get('/getPdf/:id', (req,res) =>{
+            this.PdfController.getPdf(req.params.id).then((pdfUrl) =>{
+                res.status(200).json(pdfUrl)
+            }).catch((err) =>{
+                console.log('erro3' , err);
+                res.status(400).json(err);
+            })
+        })
+
+        routes.post('/inserir', (req,res) =>{
+            this.PdfController.inserirPost(req,this.Balancer).then((succ) =>{
+                res.render('index', { title: 'Express' });           
+            }).catch((err)=>{
+                res.json(err);
+            })
+        });
+
+
+        routes.get('/delete/:id',(req,res) =>{
+            this.PdfController.deletarPdf(req.params.id).then((succ) =>{
+                res.render('index', { title: 'Express' });           
+            }).catch((err) =>{
+                res.json(err);
+            })
+        })
     }
 }
 

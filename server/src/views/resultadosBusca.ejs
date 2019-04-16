@@ -8,7 +8,14 @@
     <body>
         <% include include/header.ejs %>
         <main class="form container">
-                <h2><%= string%></h2>
+
+                <form action="busca" method="GET">
+                        <div class="form-group row">
+                            <input class="form-control col-md-4" style="margin-left: 17px" type="text" id="busca" name="b" value="<%= string%>" required  autocomplete="off">
+                            <button class="btn btn-outline-info col-1"  type="submit">Buscar</button>
+                        </div>
+                </form>
+
                 <% if(retorno.length == 0){ %>
                     <h2>Nada Encotrado :(</h2>    
                 <% } %>
@@ -19,9 +26,13 @@
                         </div>
                         <div class="card-body">
                             <p>Descrição: <%= retorno[i].description%></p>
+                            <p>Criado por: <%= retorno[i].createdBy.name%></p>
+                            <p>Email para contato: <%= retorno[i].createdBy.email%></p>
                             <p>Data upload: <%= retorno[i].createdAt%></p>
                             <button class="btn btn-success down" pdf="<%=retorno[i].id %>">Download</button>
+                            <% if( user.google.id === retorno[i].createdBy.id ){ %>
                             <a class="btn btn-danger" href="/api/delete/<%=retorno[i].id %>">Excluir</a>
+                            <% }%>
 
                         </div>
                     </div>
@@ -44,7 +55,7 @@
                     $.ajax({
                         type: "GET",
                         url: 'http://' + data,
-                        success: download.bind(true, "application/pdf", "teste.pdf"),
+                        success: download.bind(true, "application/pdf", "download.pdf"),
                         fail: function(err){
                             console.log('err', err)
                         },

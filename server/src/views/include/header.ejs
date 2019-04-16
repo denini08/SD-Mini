@@ -1,10 +1,18 @@
 <header class="cabecalho bg">
-    <% var inserir= "inserir"
-    var busca= "buscar"
-    var home= "index"%>
-    <a href="/api/index"> <img src="/logoupe.png" alt="PDf online"></a>
-    <nav>
-        <li><a href="<%= home %>">Home</a> </li>
-        <li><a href="<%= inserir %>">Inserir</a> </li>
+    <a href="/api/home"> <img src="/logoupe.png" alt="PDf online"></a>
+    <nav class="navbar navbar-expand-lg">
+        <li><a href="/api/index">Home</a> </li>
+        <li><a href="/api/inserir">Inserir</a> </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <%= currentUser.google.name%>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/api/logout">Sair</a>
+              <div class="dropdown-divider"></div>
+              <label class="dropdown-item" ><%= currentUser.google.email%></label >
+            </div>
+          </li>
     </nav>
 </header>

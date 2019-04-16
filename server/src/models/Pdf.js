@@ -13,6 +13,11 @@ const ProductSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    createdBy:{
+        name: String,
+        id  : String,
+        email: String
+    },
     createdAt: {
         type: Date,
         default: Date.now,

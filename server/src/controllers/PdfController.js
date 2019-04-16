@@ -22,7 +22,12 @@ class PdfController {
                         let pdf = {
                             'title': req.body.title,
                             'description': req.body.description,
-                            'url': servidorEnviar.ip + ':'+ servidorEnviar.port
+                            'url': servidorEnviar.ip + ':'+ servidorEnviar.port,
+                            'createdBy': {
+                                'name': req.user.google.name,
+                                'id': req.user.google.id,
+                                'email': req.user.google.email,
+                            }
                         }
                         console.log('pdfBanco', pdf);
                         Pdf.create(pdf).then((pdfz) =>{

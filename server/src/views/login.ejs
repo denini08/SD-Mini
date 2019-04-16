@@ -1,0 +1,25 @@
+<!DOCTYPE <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <% include include/head.ejs %> 
+</head>
+<body>
+    <header class="cabecalho bg">
+    
+        <a href="/api/index"> <img src="/logoupe.png" alt="PDf online"></a>
+    </header>
+
+    <div class="container login-container">
+        <div class="row">
+            <div class="col-md-6 login-form-1">
+                <h1>É necessario fazer login:</h1>
+                <a href="/api/auth/google" class="btn btn-danger">Google</a>
+            </div>
+        </div>
+    </div>
+
+
+    <% include include/footer.ejs %>
+    <% include include/scripts.ejs %>
+</body>
+</html>
